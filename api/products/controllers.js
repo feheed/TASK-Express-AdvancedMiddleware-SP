@@ -1,4 +1,13 @@
-const Product = require('../../models/Product');
+const Product = require("../../models/Product");
+
+exports.fetchProduct = async (productId, next) => {
+  try {
+    const foundProduct = await Product.findById(productId);
+    return res.json(foundProduct);
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.getProducts = async (req, res) => {
   try {
@@ -25,7 +34,7 @@ exports.productDelete = async (req, res) => {
       foundProduct.remove();
       return res.status(204).end();
     } else {
-      next({ status: 404, message: 'Product Not Found' });
+      next({ status: 404, message: "Product Not Found" });
     }
   } catch (error) {
     next(error);
@@ -40,7 +49,7 @@ exports.productUpdate = async (req, res) => {
       await foundProduct.updateOne(req.body, { new: true });
       return res.json(foundProduct);
     } else {
-      next({ status: 404, message: 'Product Not Found' });
+      next({ status: 404, message: "Product Not Found" });
     }
   } catch (error) {
     next(error);

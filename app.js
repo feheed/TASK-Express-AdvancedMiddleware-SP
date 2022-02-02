@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const connectDb = require('./database');
-const productsRoutes = require('./api/products/routes');
+const express = require("express");
+const cors = require("cors");
+const connectDb = require("./database");
+const productsRoutes = require("./api/products/routes");
+const { logger, errorMessage } = require("./middleware/middlewares");
 
 const app = express();
 connectDb();
@@ -9,19 +10,10 @@ connectDb();
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log(
-    `${req.method} ${req.protocol}://${req.get('host')}${req.originalUrl}`
-  );
-  next();
-});
+app.use(logger);
 
 // Routes
-app.use('/products', productsRoutes);
+app.use("/products", productsRoutes);
 
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error',
-  });
-});
+app.use(errorMessage);
 app.listen(process.env.PORT || 5000);
